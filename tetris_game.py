@@ -22,4 +22,6 @@ class Tetris_Game:
         except IllegalMoveError:
             self.piece_in_play = not self.piece_in_play
     
-    # def auto_down(self)
+    def auto_down(self):
+        while(self.piece_in_play):
+            self.move_piece_down()

@@ -26,6 +26,8 @@ while run:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 tetris.move_piece_down()
+            elif event.key == pygame.K_SPACE:
+                tetris.auto_down()
 
     pygame.display.update()
     pygame.event.clear()
