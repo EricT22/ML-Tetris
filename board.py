@@ -28,4 +28,7 @@ class Board:
         self.board[row][col] = value
 
     def get_value(self, row, col) -> chr:
+        if row < 0 or col < 0:
+            raise IndexError
+
         return self.board[row][col]

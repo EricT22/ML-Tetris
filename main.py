@@ -15,7 +15,8 @@ tetris = Tetris_Game()
 
 run = True
 
-# something here about drawing first updating the moves later and updating the screen after one tick that's unsettling
+# TODO: something here about drawing first updating the moves later and updating the screen after one tick that's unsettling
+# TODO: also maybe change to key pressed b/c if you hold it should keep activating
 while run:
     screen.fill((0, 0, 0))
     tetris.draw(screen)
@@ -28,6 +29,10 @@ while run:
                 tetris.move_piece_down()
             elif event.key == pygame.K_SPACE:
                 tetris.auto_down()
+            elif event.key == pygame.K_RIGHT:
+                tetris.move_piece_sideways(True)
+            elif event.key == pygame.K_LEFT:
+                tetris.move_piece_sideways(False)
 
     pygame.display.update()
     pygame.event.clear()

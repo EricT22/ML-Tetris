@@ -23,8 +23,8 @@ class Piece:
             self.center.setY(self.center.getY() + 1)
 
             for i in range(len(self.piece_constants[self.orientation])):
-                if (board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U'):
+                if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
                     raise IllegalMoveError
                 
             self.draw_on_board(board)
@@ -33,6 +33,35 @@ class Piece:
             self.center.setY(self.center.getY() - 1)
             self.draw_on_board(board)
             raise IllegalMoveError
+        
+
+    def move_sideways(self, board: Board, move_right):
+        try:
+            self._remove_piece_from_board(board)
+
+            if move_right:
+                self.center.setX(self.center.getX() + 1)
+            else:
+                self.center.setX(self.center.getX() - 1)
+
+
+            for i in range(len(self.piece_constants[self.orientation])):
+                try:    
+                    if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                        self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
+                        raise IllegalMoveError
+                except IndexError:
+                    raise IllegalMoveError
+
+            self.draw_on_board(board)
+
+        except (IndexError, IllegalMoveError):
+            if move_right:
+                self.center.setX(self.center.getX() - 1)
+            else:
+                self.center.setX(self.center.getX() + 1)
+
+            self.draw_on_board(board)
         
     
     def _remove_piece_from_board(self, board: Board):

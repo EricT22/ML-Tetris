@@ -17,11 +17,16 @@ class Tetris_Game:
         self.board.draw(screen)
 
     def move_piece_down(self):
-        try:
-            self.cur_piece.move_down(self.board)
-        except IllegalMoveError:
-            self.piece_in_play = not self.piece_in_play
+        if self.piece_in_play:
+            try:
+                self.cur_piece.move_down(self.board)
+            except IllegalMoveError:
+                self.piece_in_play = not self.piece_in_play
     
     def auto_down(self):
-        while(self.piece_in_play):
+        while self.piece_in_play:
             self.move_piece_down()
+
+    def move_piece_sideways(self, move_right: bool):
+        if self.piece_in_play:
+            self.cur_piece.move_sideways(self.board, move_right)
