@@ -1,5 +1,6 @@
 from board import Board
 from point import Point
+from IllegalMoveError import IllegalMoveError
 
 class Piece:
     def __init__(self) -> None:
@@ -10,9 +11,36 @@ class Piece:
     
     def draw_on_board(self, board: Board):
         for i in range(len(self.piece_constants[self.orientation])):
-                board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-                                   self.center.getX() + self.piece_constants[self.orientation][i].getX(),
-                                   self.name)
+            board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                self.center.getX() + self.piece_constants[self.orientation][i].getX(),
+                                self.name)
+    
+    
+    def move_down(self, board: Board):
+        try:
+            self._remove_piece_from_board(board)
+
+            self.center.setY(self.center.getY() + 1)
+
+            for i in range(len(self.piece_constants[self.orientation])):
+                if (board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U'):
+                    raise IllegalMoveError
+                
+            self.draw_on_board(board)
+
+        except (IndexError, IllegalMoveError):
+            self.center.setY(self.center.getY() - 1)
+            self.draw_on_board(board)
+            raise IllegalMoveError
+        
+    
+    def _remove_piece_from_board(self, board: Board):
+        for i in range(len(self.piece_constants[self.orientation])):
+            board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                self.center.getX() + self.piece_constants[self.orientation][i].getX(),
+                                'U')
+
 
 class T(Piece):
     def __init__(self) -> None:

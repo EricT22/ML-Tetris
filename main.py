@@ -8,9 +8,9 @@ HEIGHT = 700
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
+pygame.event.set_blocked(pygame.NOEVENT)
 
 clock = pygame.time.Clock()
-
 tetris = Tetris_Game()
 
 run = True
@@ -22,8 +22,12 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                tetris.move_piece_down(screen)
 
     pygame.display.update()
+    pygame.event.clear()
     clock.tick(60)
 
 pygame.quit()
