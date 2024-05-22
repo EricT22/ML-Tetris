@@ -16,8 +16,10 @@ class Tetris_Game:
         self.cur_piece.draw_on_board(self.board)
         self.board.draw(screen)
 
-    def move_piece_down(self, screen):
+    def move_piece_down(self):
         try:
             self.cur_piece.move_down(self.board)
         except IllegalMoveError:
             self.piece_in_play = not self.piece_in_play
+    
+    # def auto_down(self)

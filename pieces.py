@@ -15,7 +15,7 @@ class Piece:
                                 self.center.getX() + self.piece_constants[self.orientation][i].getX(),
                                 self.name)
     
-    
+
     def move_down(self, board: Board):
         try:
             self._remove_piece_from_board(board)

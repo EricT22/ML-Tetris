@@ -15,6 +15,7 @@ tetris = Tetris_Game()
 
 run = True
 
+# something here about drawing first updating the moves later and updating the screen after one tick that's unsettling
 while run:
     screen.fill((0, 0, 0))
     tetris.draw(screen)
@@ -24,7 +25,7 @@ while run:
             run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
-                tetris.move_piece_down(screen)
+                tetris.move_piece_down()
 
     pygame.display.update()
     pygame.event.clear()
