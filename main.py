@@ -16,7 +16,6 @@ tetris = Tetris_Game()
 run = True
 
 # TODO: something here about drawing first updating the moves later and updating the screen after one tick that's unsettling
-# TODO: also maybe change to key pressed b/c if you hold it should keep activating
 while run:
     screen.fill((0, 0, 0))
     tetris.draw(screen)
