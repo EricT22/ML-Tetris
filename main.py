@@ -32,6 +32,10 @@ while run:
                 tetris.move_piece_sideways(True)
             elif event.key == pygame.K_LEFT:
                 tetris.move_piece_sideways(False)
+            elif event.key == pygame.K_UP:
+                tetris.rotate_piece(True)
+            elif event.key == pygame.K_z:
+                tetris.rotate_piece(False)
 
     pygame.display.update()
     pygame.event.clear()

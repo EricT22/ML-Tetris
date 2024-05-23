@@ -63,22 +63,32 @@ class Piece:
 
             self.draw_on_board(board)
 
-    # def rotate(self, board: Board, rotate_right):
-    #     try:
-    #         cur_orientation = self.orientation
 
-    #         if rotate_right:
-    #             self.orientation = (self.orientation + 1) % 4
-    #         else:
-    #             self.orientation = (self.orientation - 1 + 4) % 4
+    def rotate(self, board: Board, rotate_right):
+        try:
+            cur_orientation = self.orientation
 
-    #         for i in range(len(self.piece_constants[self.orientation])):
-    #             try:    
-    #                 if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-    #                                     self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
-    #                     raise IllegalMoveError
-    #             except IndexError:
-    #                 raise IllegalMoveError
+            self._remove_piece_from_board(board)
+
+            if rotate_right:
+                self.orientation = (self.orientation + 1) % 4
+            else:
+                self.orientation = (self.orientation - 1 + 4) % 4
+
+            for i in range(len(self.piece_constants[self.orientation])):
+                try:    
+                    if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                        self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
+                        raise IllegalMoveError
+                except IndexError:
+                    raise IllegalMoveError
+            
+            self.draw_on_board(board)
+        
+        except IllegalMoveError:
+            self.orientation = cur_orientation
+            self.draw_on_board(board)
+
     
     def _remove_piece_from_board(self, board: Board):
         for i in range(len(self.piece_constants[self.orientation])):

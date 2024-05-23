@@ -22,6 +22,7 @@ class Tetris_Game:
                 self.cur_piece.move_down(self.board)
             except IllegalMoveError:
                 self.piece_in_play = not self.piece_in_play
+                self._spawn_new_piece()
     
     def auto_down(self):
         while self.piece_in_play:
@@ -30,3 +31,10 @@ class Tetris_Game:
     def move_piece_sideways(self, move_right: bool):
         if self.piece_in_play:
             self.cur_piece.move_sideways(self.board, move_right)
+
+    def rotate_piece(self, rotate_right: bool):
+        if self.piece_in_play:
+            self.cur_piece.rotate(self.board, rotate_right)
+        
+    def _spawn_new_piece(self):
+        pass
