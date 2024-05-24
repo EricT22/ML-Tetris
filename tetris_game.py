@@ -50,8 +50,9 @@ class Tetris_Game:
 
         while row >= 0:
             if self._row_filled(row):
-                self._remove_row(row)
-                row += 1
+                # self._remove_row(row)
+                # row += 1
+                print('hi')
             
             row -= 1
     
