@@ -23,6 +23,7 @@ class Tetris_Game:
             except IllegalMoveError:
                 self.piece_in_play = not self.piece_in_play
         else:
+            self._check_line_clear()
             self._spawn_new_piece()
     
     def auto_down(self):
@@ -41,3 +42,28 @@ class Tetris_Game:
         self.cur_piece = self.bag.get_next_piece()
         self.cur_piece.draw_on_board(self.board)
         self.piece_in_play = not self.piece_in_play
+
+
+ # needs to be optimized or something
+    def _check_line_clear(self):
+        row = len(self.board.game_board) - 1
+
+        while row >= 0:
+            if self._row_filled(row):
+                self._remove_row(row)
+                row += 1
+            
+            row -= 1
+    
+    def _row_filled(self, row):
+        for c in self.board.game_board[row]:
+            if c == 'U':
+                return False
+            
+        return True
+    
+    def _remove_row(self, row):
+        for i in range(row, 0, -1):
+            self.board.game_board[i] = self.board.game_board[i - 1]
+        
+        self.board.game_board[0] = [0 for i in range(self.board.cols)]

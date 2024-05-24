@@ -6,7 +6,7 @@ class Board:
         self.size = 35
         self.rows = 20
         self.cols = 10
-        self.board = [['U' for j in range(self.cols)] for i in range(self.rows)]
+        self.game_board = [['U' for j in range(self.cols)] for i in range(self.rows)]
         self.colors = {
             'U': (60, 130, 200), # unassigned - medium blue
             'T': (155, 0, 228), # purple
@@ -25,10 +25,10 @@ class Board:
                 pygame.draw.rect(screen, self.colors[self.get_value(i, j)], tile)
 
     def update_board(self, row, col, value):
-        self.board[row][col] = value
+        self.game_board[row][col] = value
 
     def get_value(self, row, col) -> chr:
         if row < 0 or col < 0:
             raise IndexError
 
-        return self.board[row][col]
+        return self.game_board[row][col]
