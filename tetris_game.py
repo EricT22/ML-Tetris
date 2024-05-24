@@ -44,14 +44,13 @@ class Tetris_Game:
         self.piece_in_play = not self.piece_in_play
 
 
- # needs to be optimized or something
     def _check_line_clear(self):
         row = len(self.board.game_board) - 1
 
         while row >= 0:
             if self._row_filled(row):
-                # self._remove_row(row)
-                # row += 1
+                self._remove_row(row)
+                row += 1
                 print('hi')
             
             row -= 1
@@ -65,6 +64,6 @@ class Tetris_Game:
     
     def _remove_row(self, row):
         for i in range(row, 0, -1):
-            self.board.game_board[i] = self.board.game_board[i - 1]
+            for j in range(self.board.cols):
+                self.board.game_board[i][j] = self.board.game_board[i - 1][j]
         
-        self.board.game_board[0] = [0 for i in range(self.board.cols)]
