@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from tetris_game import Tetris_Game
 
 pygame.init()
@@ -13,11 +13,15 @@ pygame.event.set_blocked(pygame.NOEVENT)
 clock = pygame.time.Clock()
 tetris = Tetris_Game()
 
+TETRIS_UPDATE = pygame.USEREVENT
+pygame.time.set_timer(TETRIS_UPDATE, 500)
 
-while True:
+run = True
+
+while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
+            run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 tetris.move_piece_down()
@@ -31,10 +35,14 @@ while True:
                 tetris.rotate_piece(True)
             elif event.key == pygame.K_z:
                 tetris.rotate_piece(False)
+        elif event.type == TETRIS_UPDATE and not tetris.game_over:
+            tetris.move_piece_down()
                 
     screen.fill((0, 0, 0))
     tetris.draw(screen)
 
     pygame.display.update()
-    pygame.event.clear()
     clock.tick(60)
+
+pygame.quit()
+sys.exit()

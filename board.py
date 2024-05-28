@@ -32,3 +32,10 @@ class Board:
             raise IndexError
 
         return self.game_board[row][col]
+
+    # debugging only (for now, ill use it for machine learning later)
+    def print(self):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                print(self.game_board[i][j], end=" ")
+            print("")

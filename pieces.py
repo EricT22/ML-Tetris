@@ -8,6 +8,14 @@ class Piece:
         self.center = Point(4, 1)
         self.orientation = 0
         self.piece_constants: list[list[Point]] = []
+
+    def can_spawn(self, board: Board):
+        for i in range(len(self.piece_constants[self.orientation])):
+                if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
+                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
+                    return False
+        
+        return True
     
     def draw_on_board(self, board: Board):
         for i in range(len(self.piece_constants[self.orientation])):
