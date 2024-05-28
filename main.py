@@ -15,11 +15,9 @@ tetris = Tetris_Game()
 
 
 while True:
-    
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            pygame.quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 tetris.move_piece_down()
@@ -40,5 +38,3 @@ while True:
     pygame.display.update()
     pygame.event.clear()
     clock.tick(60)
-
-pygame.quit()
