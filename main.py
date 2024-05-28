@@ -13,12 +13,9 @@ pygame.event.set_blocked(pygame.NOEVENT)
 clock = pygame.time.Clock()
 tetris = Tetris_Game()
 
-run = True
 
-# TODO: something here about drawing first updating the moves later and updating the screen after one tick that's unsettling
-while run:
-    screen.fill((0, 0, 0))
-    tetris.draw(screen)
+while True:
+    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,6 +33,9 @@ while run:
                 tetris.rotate_piece(True)
             elif event.key == pygame.K_z:
                 tetris.rotate_piece(False)
+                
+    screen.fill((0, 0, 0))
+    tetris.draw(screen)
 
     pygame.display.update()
     pygame.event.clear()
