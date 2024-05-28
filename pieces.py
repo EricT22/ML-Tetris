@@ -9,14 +9,17 @@ class Piece:
         self.orientation = 0
         self.piece_constants: list[list[Point]] = []
 
-    def can_spawn(self, board: Board):
+
+    def is_action_possible(self, board: Board):
         for i in range(len(self.piece_constants[self.orientation])):
+            try:
                 if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
                                     self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
-                    return False
-        
-        return True
+                    raise IllegalMoveError
+            except IndexError:
+                raise IllegalMoveError
     
+
     def draw_on_board(self, board: Board):
         for i in range(len(self.piece_constants[self.orientation])):
             board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
@@ -30,14 +33,11 @@ class Piece:
 
             self.center.setY(self.center.getY() + 1)
 
-            for i in range(len(self.piece_constants[self.orientation])):
-                if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
-                    raise IllegalMoveError
+            self.is_action_possible(board)
                 
             self.draw_on_board(board)
 
-        except (IndexError, IllegalMoveError):
+        except IllegalMoveError:
             self.center.setY(self.center.getY() - 1)
             self.draw_on_board(board)
             raise IllegalMoveError
@@ -53,13 +53,7 @@ class Piece:
                 self.center.setX(self.center.getX() - 1)
 
 
-            for i in range(len(self.piece_constants[self.orientation])):
-                try:    
-                    if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-                                        self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
-                        raise IllegalMoveError
-                except IndexError:
-                    raise IllegalMoveError
+            self.is_action_possible(board)
 
             self.draw_on_board(board)
 
@@ -83,13 +77,7 @@ class Piece:
             else:
                 self.orientation = (self.orientation - 1 + 4) % 4
 
-            for i in range(len(self.piece_constants[self.orientation])):
-                try:    
-                    if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-                                        self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
-                        raise IllegalMoveError
-                except IndexError:
-                    raise IllegalMoveError
+            self.is_action_possible(board)
             
             self.draw_on_board(board)
         

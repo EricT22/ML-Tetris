@@ -48,10 +48,11 @@ class Tetris_Game:
     def _spawn_new_piece(self):
         self.cur_piece = self.bag.get_next_piece()
 
-        if self.cur_piece.can_spawn(self.board):
+        try:
+            self.cur_piece.is_action_possible(self.board)
             self.cur_piece.draw_on_board(self.board)
             self.piece_in_play = True
-        else:
+        except IllegalMoveError:
             self.game_over = True
 
 
