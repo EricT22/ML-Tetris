@@ -65,7 +65,6 @@ class Tetris_Game:
             if self._row_filled(row):
                 self._remove_row(row)
                 row += 1
-                print('hi')
             
             row -= 1
     
