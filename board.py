@@ -1,13 +1,13 @@
 import pygame
 
-class Board:
+class Board_Panel:
 
-    def __init__(self) -> None:
-        self.size = 35
-        self.rows = 20
-        self.cols = 10
-        self.x_offset = 50
-        self.y_offset = 50
+    def __init__(self, tile_size: int, rows: int, cols: int, x_offset: int, y_offset: int) -> None:
+        self.tile_size = tile_size
+        self.rows = rows
+        self.cols = cols
+        self.x_offset = x_offset
+        self.y_offset = y_offset
         self.game_board = [['U' for j in range(self.cols)] for i in range(self.rows)]
         self.colors = {
             'U': (60, 130, 200), # unassigned - medium blue
@@ -24,7 +24,8 @@ class Board:
     def draw(self, screen):
         for i in range(self.rows):
             for j in range(self.cols):
-                tile = pygame.Rect(j * self.size + self.x_offset, i * self.size + self.y_offset, self.size - 1, self.size - 1)
+                tile = pygame.Rect(j * self.tile_size + self.x_offset, i * self.tile_size + self.y_offset, 
+                                   self.tile_size - 1, self.tile_size - 1)
                 pygame.draw.rect(screen, self.colors[self.get_value(i, j)], tile)
 
 

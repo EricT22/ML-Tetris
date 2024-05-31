@@ -1,11 +1,12 @@
+import cfg
 from bag import Bag
 from pieces import Piece
-from board import Board
+from board import Board_Panel
 from IllegalMoveError import IllegalMoveError
 
 class Tetris_Game:
     def __init__(self) -> None:
-        self.board = Board()
+        self.board = Board_Panel(cfg.TETRIS_TILE_SIZE, cfg.TETRIS_ROWS, cfg.TETRIS_COLS, cfg.MAIN_BOARD_X_OFFSET, cfg.MAIN_BOARD_Y_OFFSET)
         self.bag = Bag()
         self.cur_piece: Piece = self.bag.get_next_piece()
         self.piece_in_play = True

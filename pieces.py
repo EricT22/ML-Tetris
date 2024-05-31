@@ -1,4 +1,4 @@
-from board import Board
+from board import Board_Panel
 from point import Point
 from IllegalMoveError import IllegalMoveError
 
@@ -10,7 +10,7 @@ class Piece:
         self.piece_constants: list[list[Point]] = []
 
 
-    def is_action_possible(self, board: Board):
+    def is_action_possible(self, board: Board_Panel):
         for i in range(len(self.piece_constants[self.orientation])):
             try:
                 if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
@@ -20,14 +20,14 @@ class Piece:
                 raise IllegalMoveError
     
 
-    def draw_on_board(self, board: Board):
+    def draw_on_board(self, board: Board_Panel):
         for i in range(len(self.piece_constants[self.orientation])):
             board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
                                 self.center.getX() + self.piece_constants[self.orientation][i].getX(),
                                 self.name)
     
 
-    def move_down(self, board: Board):
+    def move_down(self, board: Board_Panel):
         try:
             self._remove_piece_from_board(board)
 
@@ -43,7 +43,7 @@ class Piece:
             raise IllegalMoveError
         
 
-    def move_sideways(self, board: Board, move_right):
+    def move_sideways(self, board: Board_Panel, move_right):
         try:
             self._remove_piece_from_board(board)
 
@@ -66,7 +66,7 @@ class Piece:
             self.draw_on_board(board)
 
 
-    def rotate(self, board: Board, rotate_right):
+    def rotate(self, board: Board_Panel, rotate_right):
         try:
             cur_orientation = self.orientation
 
@@ -86,7 +86,7 @@ class Piece:
             self.draw_on_board(board)
 
     
-    def _remove_piece_from_board(self, board: Board):
+    def _remove_piece_from_board(self, board: Board_Panel):
         for i in range(len(self.piece_constants[self.orientation])):
             board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
                                 self.center.getX() + self.piece_constants[self.orientation][i].getX(),

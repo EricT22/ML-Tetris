@@ -1,12 +1,9 @@
-import pygame, sys
+import pygame, sys, cfg
 from tetris_game import Tetris_Game
 
 pygame.init()
 
-WIDTH = 450
-HEIGHT = 800
-
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((cfg.WIDTH, cfg.HEIGHT))
 pygame.display.set_caption("Tetris")
 pygame.event.set_blocked(pygame.NOEVENT)
 
