@@ -41,7 +41,7 @@ class Tetris_Game:
 
 
     def rotate_piece(self, rotate_right: bool):
-        if self.piece_in_play and not self.game_over:
+        if self.piece_in_play and not self.game_over and self.cur_piece.name != 'O':
             self.cur_piece.rotate(self.board, rotate_right)
         
 

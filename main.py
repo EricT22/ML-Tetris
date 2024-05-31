@@ -3,8 +3,8 @@ from tetris_game import Tetris_Game
 
 pygame.init()
 
-WIDTH = 350
-HEIGHT = 700
+WIDTH = 450
+HEIGHT = 800
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
@@ -40,7 +40,7 @@ while run:
         elif event.type == TETRIS_UPDATE and not tetris.game_over:
             tetris.move_piece_down()
                 
-    screen.fill((0, 0, 0))
+    screen.fill("#3e4756")
     tetris.draw(screen)
 
     pygame.display.update()

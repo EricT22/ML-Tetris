@@ -6,6 +6,8 @@ class Board:
         self.size = 35
         self.rows = 20
         self.cols = 10
+        self.x_offset = 50
+        self.y_offset = 50
         self.game_board = [['U' for j in range(self.cols)] for i in range(self.rows)]
         self.colors = {
             'U': (60, 130, 200), # unassigned - medium blue
@@ -22,7 +24,7 @@ class Board:
     def draw(self, screen):
         for i in range(self.rows):
             for j in range(self.cols):
-                tile = pygame.Rect(j * self.size, i * self.size, self.size - 1, self.size - 1)
+                tile = pygame.Rect(j * self.size + self.x_offset, i * self.size + self.y_offset, self.size - 1, self.size - 1)
                 pygame.draw.rect(screen, self.colors[self.get_value(i, j)], tile)
 
 
