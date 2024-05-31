@@ -1,4 +1,4 @@
-import pygame
+import pygame, cfg
 
 class Board_Panel:
 
@@ -10,14 +10,14 @@ class Board_Panel:
         self.y_offset = y_offset
         self.game_board = [['U' for j in range(self.cols)] for i in range(self.rows)]
         self.colors = {
-            'U': (60, 130, 200), # unassigned - medium blue
-            'T': (155, 0, 228), # purple
-            'L': (255, 200, 0), # orange
-            'J': (0, 0, 255), # blue
-            'I': (30, 220, 252), # sky blue
-            'O': (255, 255, 0), # yellow
-            'S': (0, 255, 0), # green
-            'Z': (255, 0, 0) # red
+            'U': cfg.MEDIUM_BLUE, # unassigned
+            'T': cfg.PURPLE,
+            'L': cfg.ORANGE,
+            'J': cfg.REGULAR_BLUE,
+            'I': cfg.SKY_BLUE,
+            'O': cfg.YELLOW,
+            'S': cfg.GREEN,
+            'Z': cfg.RED
         }
 
 

@@ -37,7 +37,7 @@ while run:
         elif event.type == TETRIS_UPDATE and not tetris.game_over:
             tetris.move_piece_down()
                 
-    screen.fill("#3e4756")
+    screen.fill(cfg.MAIN_BACKGROUND_COLOR)
     tetris.draw(screen)
 
     pygame.display.update()
