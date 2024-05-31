@@ -45,6 +45,16 @@ class Tetris_Game:
             self.cur_piece.rotate(self.board, rotate_right)
         
 
+    def restart_game(self):
+        self.board.clear()
+        self.bag.refill()
+        self._spawn_new_piece()
+
+        self.game_over = False
+
+
+
+    # helper functions
     def _spawn_new_piece(self):
         self.cur_piece = self.bag.get_next_piece()
 
@@ -56,8 +66,6 @@ class Tetris_Game:
             self.game_over = True
 
 
-
-    # helper functions
     def _check_line_clear(self):
         row = len(self.board.game_board) - 1
 

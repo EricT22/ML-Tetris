@@ -18,20 +18,30 @@ class Board:
             'Z': (255, 0, 0) # red
         }
 
+
     def draw(self, screen):
         for i in range(self.rows):
             for j in range(self.cols):
                 tile = pygame.Rect(j * self.size, i * self.size, self.size - 1, self.size - 1)
                 pygame.draw.rect(screen, self.colors[self.get_value(i, j)], tile)
 
+
     def update_board(self, row, col, value):
         self.game_board[row][col] = value
+
 
     def get_value(self, row, col) -> chr:
         if row < 0 or col < 0:
             raise IndexError
 
         return self.game_board[row][col]
+    
+
+    def clear(self):
+        for row in range(self.rows):
+            for col in range(self.cols):
+                self.update_board(row, col, 'U')
+
 
     # debugging only (for now, ill use it for machine learning later)
     def print(self):

@@ -35,6 +35,8 @@ while run:
                 tetris.rotate_piece(True)
             elif event.key == pygame.K_z:
                 tetris.rotate_piece(False)
+            elif event.key == pygame.K_r and tetris.game_over:
+                tetris.restart_game()
         elif event.type == TETRIS_UPDATE and not tetris.game_over:
             tetris.move_piece_down()
                 
