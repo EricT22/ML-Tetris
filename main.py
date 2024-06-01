@@ -7,6 +7,19 @@ screen = pygame.display.set_mode((cfg.WIDTH, cfg.HEIGHT))
 pygame.display.set_caption("Tetris")
 pygame.event.set_blocked(pygame.NOEVENT)
 
+
+label_font = pygame.font.Font(None, 50)
+next_label_surface = label_font.render("NEXT", True, cfg.COOL_WHITE)
+hold_label_surface = label_font.render("HOLD", True, cfg.COOL_WHITE)
+level_label_surface = label_font.render("LEVEL", True, cfg.COOL_WHITE)
+score_label_surface = label_font.render("SCORE", True, cfg.COOL_WHITE)
+lines_label_surface = label_font.render("LINES", True, cfg.COOL_WHITE)
+
+level_field = pygame.Rect(72.5, 425, 175, 40)
+score_field = pygame.Rect(72.5, 550, 175, 40)
+lines_field = pygame.Rect(72.5, 675, 175, 40)
+
+
 clock = pygame.time.Clock()
 tetris = Tetris_Game()
 
@@ -38,6 +51,20 @@ while run:
             tetris.move_piece_down()
                 
     screen.fill(cfg.MAIN_BACKGROUND_COLOR)
+    
+    screen.blit(next_label_surface, (760, 150))
+
+    screen.blit(hold_label_surface, (108, 40))
+    
+    screen.blit(level_label_surface, (105, 375))
+    pygame.draw.rect(screen, cfg.FIELDS_COLOR, level_field, 0, 5)
+
+    screen.blit(score_label_surface, (100, 500))
+    pygame.draw.rect(screen, cfg.FIELDS_COLOR, score_field, 0, 5)
+    
+    screen.blit(lines_label_surface, (110, 625))
+    pygame.draw.rect(screen, cfg.FIELDS_COLOR, lines_field, 0, 5)
+
     tetris.draw(screen)
 
     pygame.display.update()
