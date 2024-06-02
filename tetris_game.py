@@ -11,6 +11,11 @@ class Tetris_Game:
         self.cur_piece: Piece = self.bag.get_next_piece()
         self.piece_in_play = True
         self.game_over = False
+        self.level_up_constant = 10
+        self.level = 1
+        self.score = 0
+        self.lines = 0
+
     
 
     def draw(self, screen) -> None:
@@ -19,21 +24,23 @@ class Tetris_Game:
         self.board.draw(screen)
 
 
-    def move_piece_down(self):
+    def move_piece_down(self, score_per_move: int):
         if not self.game_over:    
             if self.piece_in_play:
                 try:
                     self.cur_piece.move_down(self.board)
+                    self.score += score_per_move
                 except IllegalMoveError:
                     self.piece_in_play = False
             else:
-                self._check_line_clear()
+                lines_cleared = self._check_line_clear()
+                self.update_counters(lines_cleared)
                 self._spawn_new_piece()
 
 
-    def auto_down(self):
+    def auto_down(self, score_per_move: int):
         while self.piece_in_play and not self.game_over:
-            self.move_piece_down()
+            self.move_piece_down(score_per_move)
 
 
     def move_piece_sideways(self, move_right: bool):
@@ -44,12 +51,33 @@ class Tetris_Game:
     def rotate_piece(self, rotate_right: bool):
         if self.piece_in_play and not self.game_over and self.cur_piece.name != 'O':
             self.cur_piece.rotate(self.board, rotate_right)
+
+
+    def update_counters(self, lines_cleared: int):
+
+        match lines_cleared:
+            case 0: line_score = 0
+            case 1: line_score = 100 * self.level
+            case 2: line_score = 300 * self.level
+            case 3: line_score = 500 * self.level
+            case 4: line_score = 800 * self.level
         
+        self.score += line_score
+
+        for i in range(lines_cleared):
+            self.lines += 1
+            if self.lines != 0 and self.lines % self.level_up_constant == 0:
+                self.level += 1
+
 
     def restart_game(self):
         self.board.clear()
         self.bag.refill()
         self._spawn_new_piece()
+
+        self.level = 1
+        self.score = 0
+        self.lines = 0
 
         self.game_over = False
 
@@ -67,15 +95,19 @@ class Tetris_Game:
             self.game_over = True
 
 
-    def _check_line_clear(self):
+    def _check_line_clear(self) -> int:
+        lines_cleared = 0
         row = len(self.board.game_board) - 1
 
         while row >= 0:
             if self._row_filled(row):
                 self._remove_row(row)
+                lines_cleared += 1
                 row += 1
             
             row -= 1
+        
+        return lines_cleared
     
     def _row_filled(self, row):
         for c in self.board.game_board[row]:
