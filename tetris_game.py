@@ -15,7 +15,7 @@ class Tetris_Game:
         self.next_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg.PIECE_SIDE_PANEL_Y)
         self.piece_in_play = True
         self.game_over = False
-        self.level_up_constant = 10
+        self.level_up_triggered = False
         self.level = 1
         self.score = 0
         self.lines = 0
@@ -73,8 +73,9 @@ class Tetris_Game:
 
         for i in range(lines_cleared):
             self.lines += 1
-            if self.lines != 0 and self.lines % self.level_up_constant == 0:
+            if self.lines != 0 and self.lines % cfg.LINES_PER_LEVEL_UP == 0:
                 self.level += 1
+                self.level_up_triggered = True
 
 
     def restart_game(self):

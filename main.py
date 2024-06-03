@@ -25,7 +25,7 @@ clock = pygame.time.Clock()
 tetris = Tetris_Game()
 
 TETRIS_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(TETRIS_UPDATE, 500)
+pygame.time.set_timer(TETRIS_UPDATE, cfg.STARTING_TICK_SPEED)
 
 run = True
 
@@ -51,6 +51,15 @@ while run:
         elif event.type == TETRIS_UPDATE and not tetris.game_over:
             tetris.move_piece_down(0)
                 
+    
+    if tetris.level_up_triggered:
+        new_tick_speed = cfg.STARTING_TICK_SPEED - (cfg.TICK_SPEED_MULTIPLIER * (tetris.level - 1))
+
+        pygame.time.set_timer(TETRIS_UPDATE, cfg.FASTEST_TICK_SPEED if new_tick_speed < cfg.FASTEST_TICK_SPEED else new_tick_speed)
+
+        tetris.level_up_triggered = False
+
+
     screen.fill(cfg.MAIN_BACKGROUND_COLOR)
     
 
