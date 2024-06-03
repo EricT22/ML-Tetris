@@ -1,3 +1,4 @@
+import cfg
 from board import Board_Panel
 from point import Point
 from IllegalMoveError import IllegalMoveError
@@ -5,9 +6,14 @@ from IllegalMoveError import IllegalMoveError
 class Piece:
     def __init__(self) -> None:
         self.name = ""
-        self.center = Point(4, 1)
+        self.center = Point(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
         self.orientation = 0
         self.piece_constants: list[list[Point]] = []
+
+
+    def set_center(self, x, y):
+        self.center.setX(x)
+        self.center.setY(y)
 
 
     def is_action_possible(self, board: Board_Panel):

@@ -7,8 +7,12 @@ from IllegalMoveError import IllegalMoveError
 class Tetris_Game:
     def __init__(self) -> None:
         self.board = Board_Panel(cfg.TETRIS_TILE_SIZE, cfg.TETRIS_ROWS, cfg.TETRIS_COLS, cfg.MAIN_BOARD_X_OFFSET, cfg.MAIN_BOARD_Y_OFFSET)
+        self.next_board = Board_Panel(cfg.TETRIS_TILE_SIZE, cfg.SQUARE_PANEL_SIZE, cfg.SQUARE_PANEL_SIZE, cfg.NEXT_PANEL_X_OFFSET, cfg.NEXT_PANEL_Y_OFFSET)
+        self.hold_board = Board_Panel(cfg.TETRIS_TILE_SIZE, cfg.SQUARE_PANEL_SIZE, cfg.SQUARE_PANEL_SIZE, cfg.HOLD_PANEL_X_OFFSET, cfg.HOLD_PANEL_Y_OFFSET)
         self.bag = Bag()
         self.cur_piece: Piece = self.bag.get_next_piece()
+        self.next_piece: Piece = self.bag.get_next_piece()
+        self.next_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg.PIECE_SIDE_PANEL_Y)
         self.piece_in_play = True
         self.game_over = False
         self.level_up_constant = 10
@@ -21,7 +25,10 @@ class Tetris_Game:
     def draw(self, screen) -> None:
         if self.piece_in_play and not self.game_over:
             self.cur_piece.draw_on_board(self.board)
+            self.next_piece.draw_on_board(self.next_board)
         self.board.draw(screen)
+        self.next_board.draw(screen)
+        self.hold_board.draw(screen)
 
 
     def move_piece_down(self, score_per_move: int):
@@ -73,6 +80,7 @@ class Tetris_Game:
     def restart_game(self):
         self.board.clear()
         self.bag.refill()
+        self.next_piece = self.bag.get_next_piece()
         self._spawn_new_piece()
 
         self.level = 1
@@ -85,11 +93,20 @@ class Tetris_Game:
 
     # helper functions
     def _spawn_new_piece(self):
-        self.cur_piece = self.bag.get_next_piece()
+        self.cur_piece = self.next_piece
+        self.cur_piece.set_center(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
+
+        self.next_piece = self.bag.get_next_piece()
+        self.next_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg.PIECE_SIDE_PANEL_Y)
 
         try:
             self.cur_piece.is_action_possible(self.board)
             self.cur_piece.draw_on_board(self.board)
+
+            
+            self.next_board.clear()
+            self.next_piece.draw_on_board(self.next_board)
+            
             self.piece_in_play = True
         except IllegalMoveError:
             self.game_over = True
