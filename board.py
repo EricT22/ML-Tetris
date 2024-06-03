@@ -10,7 +10,7 @@ class Board_Panel:
         self.y_offset = y_offset
         self.game_board = [['U' for j in range(self.cols)] for i in range(self.rows)]
         self.colors = {
-            'U': cfg.MEDIUM_BLUE, # unassigned
+            'U': cfg.MEDIUM_BLUE, # U stands for unassigned
             'T': cfg.PURPLE,
             'L': cfg.ORANGE,
             'J': cfg.REGULAR_BLUE,
