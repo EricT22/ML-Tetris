@@ -22,8 +22,10 @@ class Agent:
         self.epsilon_decay = epsilon_decay
         self.learning_rate = learning_rate
         self.memory = deque(maxlen=max_memory_size)
+
         # size of the Tetris state, arbitrary number for now (from env)
         self.state_size = 5
+        
         # number of actions available, arbitrary for now as well (from env)
         self.action_size = 5
         self.build_NN()
@@ -43,11 +45,14 @@ class Agent:
             # hidden layer 2 goes to output layer
             nn.Linear(16, self.action_size)
         )
+
         # Will use Mean Squared Error Loss function
         self.loss_fn = nn.MSELoss()
+        
         # Will use stochastic gradient descent algorithm
         self.optimizer = torch.optim.SGD(self.model.parameters(), self.learning_rate)
         
+
     def choose_action(self, state):
         if np.random.rand() <= self.epsilon:
             return np.random.choice(self.action_size)
@@ -57,16 +62,29 @@ class Agent:
         with torch.no_grad():
             # makes a forward pass through model with the given state
             # [0] is to keep the return value a 1d tensor 
+            
+            
+
+
+
+
+
+            
+            
+            # TODO: dtype=
             q_vals = self.model(torch.tensor(state))[0]
         
         # returns highest rewarded action as a regular python number, not a tensor
         return torch.argmax(q_vals).item()
     
+
     def store_in_memory(self, transition):
         self.memory.append(transition)
 
+
     def lower_epsilon(self):
         self.epsilon = self.epsilon * self.epsilon_decay if self.epsilon > self.epsilon_min else self.epsilon
+
 
     def optimize_model(self):
         pass
