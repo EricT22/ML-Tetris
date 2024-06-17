@@ -2,6 +2,7 @@ import cfg
 from bag import Bag
 from pieces import Piece
 from board import Board_Panel
+from point import Point
 from IllegalMoveError import IllegalMoveError
 
 class Tetris_Game:
@@ -12,7 +13,9 @@ class Tetris_Game:
         self.bag = Bag()
         self.cur_piece: Piece = self.bag.get_next_piece()
         self.next_piece: Piece = self.bag.get_next_piece()
-        self.next_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg.PIECE_SIDE_PANEL_Y)
+        self.next_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg. PIECE_SIDE_PANEL_Y)
+        self.held_piece: Piece = None
+        self.hold_lock_out = False
         self.piece_in_play = True
         self.game_over = False
         self.level_up_triggered = False
@@ -29,6 +32,41 @@ class Tetris_Game:
         self.board.draw(screen)
         self.next_board.draw(screen)
         self.hold_board.draw(screen)
+
+
+    def hold(self):
+        if not self.hold_lock_out:
+            self.cur_piece.remove_piece_from_board(self.board)
+
+            if self.held_piece is None:
+                self.held_piece = self.cur_piece
+                
+                if not self._spawn_new_piece(hold_flag_set=True):
+                    self.held_piece = None
+                    self.cur_piece.draw_on_board(self.board)
+                    return
+            else:
+                temp = self.cur_piece
+                self.cur_piece = self.held_piece
+                self.cur_piece.set_center(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
+
+                try:
+                    self.cur_piece.is_action_possible(self.board)
+                    self.cur_piece.draw_on_board(self.board)
+                except IllegalMoveError:
+                    self.cur_piece = temp
+                    self.cur_piece.draw_on_board(self.board)
+                    return
+                
+                self.held_piece = temp
+            
+            self.held_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg.PIECE_SIDE_PANEL_Y)
+            self.held_piece.set_orientation(cfg.DEFAULT_ORIENTATION)
+
+            self.hold_board.clear()
+            self.held_piece.draw_on_board(self.hold_board)
+            
+            self.hold_lock_out = True
 
 
     def move_piece_down(self, score_per_move: int):
@@ -88,14 +126,19 @@ class Tetris_Game:
         self.score = 0
         self.lines = 0
 
+        self.hold_lock_out = False
+
         self.game_over = False
 
 
 
     # helper functions
-    def _spawn_new_piece(self):
+    def _spawn_new_piece(self, hold_flag_set=False) -> bool:
+        if not hold_flag_set and self.hold_lock_out:
+            self.hold_lock_out = False
+
         self.cur_piece = self.next_piece
-        self.cur_piece.set_center(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
+        self.cur_piece.set_center(cfg.PIECE_STARTING_X, cfg. PIECE_STARTING_Y)
 
         self.next_piece = self.bag.get_next_piece()
         self.next_piece.set_center(cfg.PIECE_SIDE_PANEL_X, cfg.PIECE_SIDE_PANEL_Y)
@@ -103,14 +146,19 @@ class Tetris_Game:
         try:
             self.cur_piece.is_action_possible(self.board)
             self.cur_piece.draw_on_board(self.board)
-
+            
             
             self.next_board.clear()
             self.next_piece.draw_on_board(self.next_board)
             
             self.piece_in_play = True
+
+            return True
         except IllegalMoveError:
-            self.game_over = True
+            if not hold_flag_set:
+                self.game_over = True
+
+            return False
 
 
     def _check_line_clear(self) -> int:

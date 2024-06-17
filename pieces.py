@@ -7,13 +7,16 @@ class Piece:
     def __init__(self) -> None:
         self.name = ""
         self.center = Point(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
-        self.orientation = 0
+        self.orientation = cfg.DEFAULT_ORIENTATION
         self.piece_constants: list[list[Point]] = []
 
 
     def set_center(self, x, y):
         self.center.setX(x)
         self.center.setY(y)
+
+    def set_orientation(self, orientation):
+        self.orientation = orientation
 
 
     def is_action_possible(self, board: Board_Panel):
@@ -35,7 +38,7 @@ class Piece:
 
     def move_down(self, board: Board_Panel):
         try:
-            self._remove_piece_from_board(board)
+            self.remove_piece_from_board(board)
 
             self.center.setY(self.center.getY() + 1)
 
@@ -51,7 +54,7 @@ class Piece:
 
     def move_sideways(self, board: Board_Panel, move_right):
         try:
-            self._remove_piece_from_board(board)
+            self.remove_piece_from_board(board)
 
             if move_right:
                 self.center.setX(self.center.getX() + 1)
@@ -76,7 +79,7 @@ class Piece:
         try:
             cur_orientation = self.orientation
 
-            self._remove_piece_from_board(board)
+            self.remove_piece_from_board(board)
 
             if rotate_right:
                 self.orientation = (self.orientation + 1) % 4
@@ -92,7 +95,7 @@ class Piece:
             self.draw_on_board(board)
 
     
-    def _remove_piece_from_board(self, board: Board_Panel):
+    def remove_piece_from_board(self, board: Board_Panel):
         for i in range(len(self.piece_constants[self.orientation])):
             board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
                                 self.center.getX() + self.piece_constants[self.orientation][i].getX(),
