@@ -31,17 +31,17 @@ class Agent:
     def build_NN(self):
         self.model = nn.Sequential(
             # input layer goes to hidden layer with 16 neurons
-            nn.Linear(self.state_size, 32),
+            nn.Linear(self.state_size, 16),
             # Will use the ReLU activation function for transition to next layer:
             # z^(L) = w^(L) * a^(L-1) + b(L)
             # a^(L) = ReLU(z^(L))
             nn.ReLU(), 
-            # hidden layer 1 goes to hidden layer 2 (arbitrarily chose two hidden layers each with size 32)
-            nn.Linear(32, 32),
+            # hidden layer 1 goes to hidden layer 2 (arbitrarily chose two hidden layers each with size 16)
+            nn.Linear(16, 16),
             # also uses ReLU activation function
             nn.ReLU(),
             # hidden layer 2 goes to output layer
-            nn.Linear(32, self.action_size)
+            nn.Linear(16, self.action_size)
         )
         # Will use Mean Squared Error Loss function
         self.loss_fn = nn.MSELoss()
