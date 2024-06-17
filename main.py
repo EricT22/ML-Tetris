@@ -99,7 +99,7 @@ if __name__ == "__main__":
                 tetris.move_piece_down(0)
                     
         
-        
+
         update_tick_speed()
 
         render()

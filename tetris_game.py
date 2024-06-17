@@ -2,7 +2,6 @@ import cfg
 from bag import Bag
 from pieces import Piece
 from board import Board_Panel
-from point import Point
 from IllegalMoveError import IllegalMoveError
 
 class Tetris_Game:
@@ -23,8 +22,73 @@ class Tetris_Game:
         self.score = 0
         self.lines = 0
 
-    
+        self.actions = {
+            0 : (self.move_piece_down, cfg.SCORE_PER_MOVE_DOWN),
+            1 : (self.auto_down, cfg.SCORE_PER_AUTO_DOWN),
+            2 : (self.move_piece_sideways, True),
+            3 : (self.move_piece_sideways, False),
+            4 : (self.rotate_piece, True),
+            5 : (self.rotate_piece, False),
+            6 : self.hold
+        }
 
+    
+    # Machine Learning methods
+    def reset(self):
+        # restart game, return state
+        pass
+
+
+    def step(self, action):
+        # take action, returns (next_state, reward, done) where done is a flag that is set if the game is over
+        pass
+
+
+    def get_state(self):
+        # state is a combination of number of holes, bumpiness, max height, min height, and lines cleared
+        pass
+
+
+    def holes(self) -> int:
+        num_holes = 0
+        # iterating through columns in board
+        for col in zip(*self.board.game_board):
+            row = 0
+            
+            while row < cfg.TETRIS_ROWS and col[row] == 'U':
+                row += 1
+            
+            while row < cfg.TETRIS_ROWS:
+                if col[row] == 'U':
+                    num_holes += 1
+                row += 1
+
+        return num_holes    
+
+
+    
+    def bumpiness_and_heights(self) -> tuple[int, int, int]:
+        heights = []
+
+        for col in zip(*self.board.game_board):
+            row = 0
+            
+            while row < cfg.TETRIS_ROWS and col[row] == 'U':
+                row += 1
+            
+            heights.append(cfg.TETRIS_ROWS - row)
+        
+        # bumpiness is difference in adjacent heights
+        bumpiness = 0
+        for i in range(1, cfg.TETRIS_COLS, 1):
+            bumpiness += abs(heights[i] - heights[i - 1])
+
+        return (bumpiness, max(heights), min(heights))
+
+
+
+
+    # Game methods
     def draw(self, screen) -> None:
         if self.piece_in_play and not self.game_over:
             self.cur_piece.draw_on_board(self.board)
