@@ -8,16 +8,16 @@ class Board_Panel:
         self.cols = cols
         self.x_offset = x_offset
         self.y_offset = y_offset
-        self.game_board = [['U' for j in range(self.cols)] for i in range(self.rows)]
+        self.game_board = [[0 for j in range(self.cols)] for i in range(self.rows)]
         self.colors = {
-            'U': cfg.MEDIUM_BLUE, # U stands for unassigned
-            'T': cfg.PURPLE,
-            'L': cfg.ORANGE,
-            'J': cfg.REGULAR_BLUE,
-            'I': cfg.SKY_BLUE,
-            'O': cfg.YELLOW,
-            'S': cfg.GREEN,
-            'Z': cfg.RED
+            0 : cfg.MEDIUM_BLUE, # empty
+            1 : cfg.PURPLE, # T
+            2 : cfg.ORANGE, # L
+            3 : cfg.REGULAR_BLUE, # J
+            4 : cfg.SKY_BLUE, # I
+            5 : cfg.YELLOW, # O
+            6 : cfg.GREEN, # S
+            7 : cfg.RED # Z
         }
 
 
@@ -33,7 +33,7 @@ class Board_Panel:
         self.game_board[row][col] = value
 
 
-    def get_value(self, row, col) -> chr:
+    def get_value(self, row, col) -> int:
         if row < 0 or col < 0:
             raise IndexError
 
@@ -43,7 +43,7 @@ class Board_Panel:
     def clear(self):
         for row in range(self.rows):
             for col in range(self.cols):
-                self.update_board(row, col, 'U')
+                self.update_board(row, col, 0)
 
 
     # debugging only (for now, ill use it for machine learning later)

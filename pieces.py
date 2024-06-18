@@ -5,7 +5,7 @@ from IllegalMoveError import IllegalMoveError
 
 class Piece:
     def __init__(self) -> None:
-        self.name = ""
+        self.name = None
         self.center = Point(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
         self.orientation = cfg.DEFAULT_ORIENTATION
         self.piece_constants: list[list[Point]] = []
@@ -23,7 +23,7 @@ class Piece:
         for i in range(len(self.piece_constants[self.orientation])):
             try:
                 if board.get_value(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
-                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 'U':
+                                    self.center.getX() + self.piece_constants[self.orientation][i].getX(),) != 0:
                     raise IllegalMoveError
             except IndexError:
                 raise IllegalMoveError
@@ -99,14 +99,14 @@ class Piece:
         for i in range(len(self.piece_constants[self.orientation])):
             board.update_board(self.center.getY() + self.piece_constants[self.orientation][i].getY(), 
                                 self.center.getX() + self.piece_constants[self.orientation][i].getX(),
-                                'U')
+                                0)
 
 
 class T(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "T"
+        self.name = 1
 
         self.piece_constants = [
             [Point(0, 0), Point(1, 0), Point(-1, 0), Point(0, -1)],
@@ -119,7 +119,7 @@ class L(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "L"
+        self.name = 2
 
         self.piece_constants = [
             [Point(0, 0), Point(1, 0), Point(-1, 0), Point(1, -1)],
@@ -132,7 +132,7 @@ class J(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "J"
+        self.name = 3
 
         self.piece_constants = [
             [Point(0, 0), Point(1, 0), Point(-1, 0), Point(-1, -1)],
@@ -146,7 +146,7 @@ class O(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "O"
+        self.name = 5
 
         self.piece_constants = [
             [Point(0, 0), Point(1, 0), Point(0, -1), Point(1, -1)],
@@ -156,7 +156,7 @@ class S(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "S"
+        self.name = 6
 
         self.piece_constants = [
             [Point(0, 0), Point(1, -1), Point(-1, 0), Point(0, -1)],
@@ -169,7 +169,7 @@ class Z(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "Z"
+        self.name = 7
 
         self.piece_constants = [
             [Point(0, 0), Point(-1, -1), Point(1, 0), Point(0, -1)],
@@ -182,7 +182,7 @@ class I(Piece):
     def __init__(self) -> None:
         super().__init__()
 
-        self.name = "I"
+        self.name = 4
 
         self.piece_constants = [
             [Point(0, 0), Point(1, 0), Point(2, 0), Point(-1, 0)],

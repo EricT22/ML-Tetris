@@ -22,6 +22,7 @@ class Tetris_Game:
         self.score = 0
         self.lines = 0
 
+
         self.actions = {
             0 : (self.move_piece_down, cfg.SCORE_PER_MOVE_DOWN),
             1 : (self.auto_down, cfg.SCORE_PER_AUTO_DOWN),
@@ -31,6 +32,8 @@ class Tetris_Game:
             5 : (self.rotate_piece, False),
             6 : self.hold
         }
+
+        self.board_for_calc = list(self.board.game_board)
 
     
     # Machine Learning methods
@@ -49,41 +52,29 @@ class Tetris_Game:
         pass
 
 
-    def holes(self) -> int:
-        num_holes = 0
-        # iterating through columns in board
-        for col in zip(*self.board.game_board):
-            row = 0
-            
-            while row < cfg.TETRIS_ROWS and col[row] == 'U':
-                row += 1
-            
-            while row < cfg.TETRIS_ROWS:
-                if col[row] == 'U':
-                    num_holes += 1
-                row += 1
-
-        return num_holes    
-
-
-    
-    def bumpiness_and_heights(self) -> tuple[int, int, int]:
+    def state_properties(self, board) -> tuple[int, int, int, int]:
         heights = []
-
-        for col in zip(*self.board.game_board):
+        num_holes = 0
+        
+        for col in zip(*board):
             row = 0
             
-            while row < cfg.TETRIS_ROWS and col[row] == 'U':
+            while row < cfg.TETRIS_ROWS and col[row] == 0:
                 row += 1
             
             heights.append(cfg.TETRIS_ROWS - row)
-        
+
+            while row < cfg.TETRIS_ROWS:
+                if col[row] == 0:
+                    num_holes += 1
+                row += 1
+
         # bumpiness is difference in adjacent heights
         bumpiness = 0
         for i in range(1, cfg.TETRIS_COLS, 1):
             bumpiness += abs(heights[i] - heights[i - 1])
 
-        return (bumpiness, max(heights), min(heights))
+        return (num_holes, bumpiness, max(heights), min(heights))
 
 
 
@@ -158,7 +149,7 @@ class Tetris_Game:
 
 
     def rotate_piece(self, rotate_right: bool):
-        if self.piece_in_play and not self.game_over and self.cur_piece.name != 'O':
+        if self.piece_in_play and not self.game_over and self.cur_piece.name != 5: # 5 == O piece
             self.cur_piece.rotate(self.board, rotate_right)
 
 
@@ -241,7 +232,7 @@ class Tetris_Game:
     
     def _row_filled(self, row):
         for c in self.board.game_board[row]:
-            if c == 'U':
+            if c == 0:
                 return False
             
         return True
