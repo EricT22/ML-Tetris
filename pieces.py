@@ -11,6 +11,9 @@ class Piece:
         self.piece_constants: list[list[Point]] = []
 
 
+    # TODO implement copy method (probably)
+    # reason: calculating next states with the held piece in mind
+
     def set_center(self, x, y):
         self.center.setX(x)
         self.center.setY(y)
@@ -66,6 +69,7 @@ class Piece:
 
             self.draw_on_board(board)
 
+            return True
         except IllegalMoveError:
             if move_right:
                 self.center.setX(self.center.getX() - 1)
@@ -73,6 +77,8 @@ class Piece:
                 self.center.setX(self.center.getX() + 1)
 
             self.draw_on_board(board)
+
+            return False
 
 
     def rotate(self, board: Board_Panel, rotate_right):
@@ -89,10 +95,13 @@ class Piece:
             self.is_action_possible(board)
             
             self.draw_on_board(board)
-        
+
+            return True
         except IllegalMoveError:
             self.orientation = cur_orientation
             self.draw_on_board(board)
+
+            return False
 
     
     def remove_piece_from_board(self, board: Board_Panel):

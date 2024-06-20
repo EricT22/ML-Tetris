@@ -2,6 +2,7 @@ import cfg
 from bag import Bag
 from pieces import Piece
 from board import Board_Panel
+from point import Point
 from IllegalMoveError import IllegalMoveError
 
 class Tetris_Game:
@@ -22,7 +23,7 @@ class Tetris_Game:
         self.score = 0
         self.lines = 0
 
-
+        self.board_for_calc = Board_Panel(0, cfg.TETRIS_ROWS, cfg.TETRIS_COLS, 0, 0)
         self.actions = {
             0 : (self.move_piece_down, cfg.SCORE_PER_MOVE_DOWN),
             1 : (self.auto_down, cfg.SCORE_PER_AUTO_DOWN),
@@ -33,30 +34,112 @@ class Tetris_Game:
             6 : self.hold
         }
 
-        self.board_for_calc = list(self.board.game_board)
-
     
     # Machine Learning methods
     def reset(self):
-        # restart game, return state
-        pass
+        # restart game, returns state 
+        # (no need to calculate the state because the board is empty so all properties have to be 0)
+        
+        self.restart_game()
+        
+        return (0, 0, 0, 0, 0)
 
 
-    def step(self, action):
-        # take action, returns (next_state, reward, done) where done is a flag that is set if the game is over
-        pass
 
 
-    def get_state(self):
+    def step(self, actions: tuple):
+        # takes actions to get to the best next state, 
+        # returns (reward, done) 
+        # where reward is the total score of the combined moves
+        # and done is a flag that is set if the game is over
+        initial_score = self.score
+
+        for i in range(actions[0]):
+            function, param = self.actions[4]
+            function(param)
+        
+        if actions[1] > 0:
+            # move right
+            while actions[1] > 0:
+                funct, param = self.actions[2]
+                funct(param)
+
+                actions[1] -= 1
+        elif actions[1] < 0:
+            # move left
+            while actions[1] < 0:
+                funct, param = self.actions[3]
+                funct(param)
+
+                actions[1] += 1
+        
+        # move all the way down
+        funct, param = self.actions[1]
+        funct(param)
+
+        # if program is too slow to run at live speed, these lines spawn the new piece in
+        # funct, param = self.actions[0]
+        # funct(param)
+        
+        return (self.score - initial_score, self.game_over)
+
+
+
+
+    # returns states dictionary with key value pair:
+    # (num rotations, x-offset) : tuple of state properties
+    # in other words, 
+    # actions to get to state : state itself
+    def get_next_states(self):
         # state is a combination of number of holes, bumpiness, max height, min height, and lines cleared
-        pass
+        beginning_center = Point(self.cur_piece.center.getX(), self.cur_piece.center.getY())
+
+        states = {}
+
+        num_rotations = 4 if self.cur_piece.name != 5 else 1
+
+        for i in range(num_rotations):
+            self.board_for_calc.game_board = list[self.board.game_board]
+
+            # move all the way to the left
+            while self.cur_piece.move_sideways(self.board_for_calc, False):
+                pass
+            
+            while True:
+                try:
+                    while self.cur_piece.move_down(self.board_for_calc):
+                        pass
+                except IllegalMoveError:
+                    # here, the piece will be as far down as it can go and we can evaluate the state
+                    
+                    states[(i, self.cur_piece.center.getX() - beginning_center.getX())] = self.state_properties(self.board_for_calc.game_board)
+
+                # move piece back up
+                self.cur_piece.remove_piece_from_board(self.board_for_calc)
+                self.cur_piece.set_center(self.cur_piece.center.getX(), beginning_center.getY())
+                self.cur_piece.draw_on_board(self.board_for_calc)
+
+                # move piece to the right
+                if not self.cur_piece.move_sideways(self.board_for_calc, True):
+                    break
+            
+            # move back to starting pos and rotate
+            self.cur_piece.remove_piece_from_board(self.board_for_calc)
+            self.cur_piece.set_center(beginning_center.getX(), beginning_center.getY())
+            self.cur_piece.draw_on_board(self.board_for_calc)
+
+            self.cur_piece.rotate(self.board_for_calc, True)
+
+        return states
 
 
-    def state_properties(self, board) -> tuple[int, int, int, int]:
+
+    
+    def state_properties(self, game_board) -> tuple[int, int, int, int, int]:
         heights = []
         num_holes = 0
         
-        for col in zip(*board):
+        for col in zip(*game_board):
             row = 0
             
             while row < cfg.TETRIS_ROWS and col[row] == 0:
@@ -74,7 +157,25 @@ class Tetris_Game:
         for i in range(1, cfg.TETRIS_COLS, 1):
             bumpiness += abs(heights[i] - heights[i - 1])
 
-        return (num_holes, bumpiness, max(heights), min(heights))
+        return (num_holes, bumpiness, max(heights), min(heights), self.num_rows_filled(game_board))
+
+
+    def num_rows_filled(self, board):
+        def line_filled(row):
+            for cell in row:
+                if cell == 0:
+                    return False
+                
+            return True
+        
+
+        num_lines_to_be_cleared = 0
+
+        for i in range(cfg.TETRIS_ROWS):
+            if line_filled(board[i]):
+                num_lines_to_be_cleared += 1
+        
+        return num_lines_to_be_cleared
 
 
 
