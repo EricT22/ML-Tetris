@@ -1,5 +1,6 @@
 import pygame, sys, cfg
 from tetris_game import Tetris_Game
+from agent import Agent
 
 pygame.init()
 
@@ -72,37 +73,37 @@ def update_tick_speed():
 
 
 if __name__ == "__main__":
+    agent = Agent(env=tetris)
+    state = tetris.reset()
+    
     run = True
 
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN:
-                    tetris.move_piece_down(1)
-                elif event.key == pygame.K_SPACE:
-                    tetris.auto_down(2)
-                elif event.key == pygame.K_RIGHT:
-                    tetris.move_piece_sideways(True)
-                elif event.key == pygame.K_LEFT:
-                    tetris.move_piece_sideways(False)
-                elif event.key == pygame.K_UP:
-                    tetris.rotate_piece(True)
-                elif event.key == pygame.K_z:
-                    tetris.rotate_piece(False)
-                elif event.key == pygame.K_r and tetris.game_over:
-                    tetris.restart_game()
-                elif event.key == pygame.K_LSHIFT:
-                    tetris.hold()
             elif event.type == TETRIS_UPDATE and not tetris.game_over:
                 tetris.move_piece_down(0)
+
+        action, next_state = agent.choose_action(tetris.get_next_states())
+
+        reward, done = tetris.step(action)
+
+        agent.store_in_memory(cfg.Transition(state, action, reward, next_state, done))
+
+        if done:
+            if len(agent.memory) == agent.memory.maxlen:
+                break
+            else:
+                state = tetris.reset()
                     
         
 
+        render()
+
         update_tick_speed()
 
-        render()
+        
         clock.tick(60)
 
     pygame.quit()

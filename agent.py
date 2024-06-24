@@ -1,20 +1,17 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import random
-from collections import deque, namedtuple
+from collections import deque
 
 torch.manual_seed(0)
 np.random.seed(1)
 
-Transition = namedtuple('Transition',
-                        ('state', 'action', 'reward', 'next_state', 'done'))
 
 class Agent:
     def __init__(self,
                 env, discount_factor = 0.95,
                 epsilon=1, epsilon_min=0.01, epsilon_decay=0.995,
-                learning_rate = 0.01, max_memory_size=2000) -> None:
+                learning_rate = 0.01, max_memory_size=20000) -> None:
         self.env = env
         self.gamma = discount_factor
         self.epsilon = epsilon
@@ -23,11 +20,12 @@ class Agent:
         self.learning_rate = learning_rate
         self.memory = deque(maxlen=max_memory_size)
 
-        # size of the Tetris state, arbitrary number for now (from env)
-        self.state_size = 5
+        # size of the Tetris state
+        self.state_size = env.state_size
         
-        # number of actions available, arbitrary for now as well (from env)
-        self.action_size = 5
+        # each state gets one overall rating
+        self.size_of_state_rating = 1
+
         self.build_NN()
     
     def build_NN(self):
@@ -43,7 +41,7 @@ class Agent:
             # also uses ReLU activation function
             nn.ReLU(),
             # hidden layer 2 goes to output layer
-            nn.Linear(16, self.action_size)
+            nn.Linear(16, self.size_of_state_rating)
         )
 
         # Will use Mean Squared Error Loss function
@@ -53,37 +51,49 @@ class Agent:
         self.optimizer = torch.optim.SGD(self.model.parameters(), self.learning_rate)
         
 
-    def choose_action(self, state):
+
+
+    # returns a list of length 2 as: 
+    # [actions to be taken, resulting state]
+    def choose_action(self, next_states: dict) -> list:
+        
+        # unpacks dictionary into keys and values
+        next_actions, corresponding_states = zip(*next_states.items())
+
+
         if np.random.rand() <= self.epsilon:
-            return np.random.choice(self.action_size)
+            ind = np.random.choice(len(next_states))
+
+            return [next_actions[ind], corresponding_states[ind]]
         
+
+
         # don't want calculate gradients b/c we're not backpropagating at this step, 
-        # just finding out which action to take given the current nn
+        # just finding out which action to take given the current nn and all possible next states
         with torch.no_grad():
-            # makes a forward pass through model with the given state
-            # [0] is to keep the return value a 1d tensor 
+            # makes a forward pass through model with the given states 
+            q_vals = self.model(torch.tensor(corresponding_states, dtype=torch.float32))
             
-            
-
-
-
-
-
-            
-            
-            # TODO: dtype=
-            q_vals = self.model(torch.tensor(state))[0]
+            # flattens output into 1d tensor
+            q_vals = torch.flatten(q_vals)
         
-        # returns highest rewarded action as a regular python number, not a tensor
-        return torch.argmax(q_vals).item()
-    
+        ind = torch.argmax(q_vals).item()
+
+        return [next_actions[ind], corresponding_states[ind]]
+
+
+
 
     def store_in_memory(self, transition):
         self.memory.append(transition)
 
 
-    def lower_epsilon(self):
+
+
+    def lower_greedy_epsilon(self):
         self.epsilon = self.epsilon * self.epsilon_decay if self.epsilon > self.epsilon_min else self.epsilon
+
+
 
 
     def optimize_model(self):

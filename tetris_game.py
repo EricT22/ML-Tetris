@@ -56,27 +56,29 @@ class Tetris_Game:
         initial_score = self.score
 
         for i in range(actions[0]):
-            function, param = self.actions[4]
-            function(param)
+            action, param = self.actions[4]
+            action(param)
         
-        if actions[1] > 0:
+        x_offset = actions[1]
+
+        if x_offset > 0:
             # move right
-            while actions[1] > 0:
-                funct, param = self.actions[2]
-                funct(param)
+            while x_offset > 0:
+                action, param = self.actions[2]
+                action(param)
 
-                actions[1] -= 1
-        elif actions[1] < 0:
+                x_offset -= 1
+        elif x_offset < 0:
             # move left
-            while actions[1] < 0:
-                funct, param = self.actions[3]
-                funct(param)
+            while x_offset < 0:
+                action, param = self.actions[3]
+                action(param)
 
-                actions[1] += 1
+                x_offset += 1
         
         # move all the way down
-        funct, param = self.actions[1]
-        funct(param)
+        action, param = self.actions[1]
+        action(param)
 
         # if program is too slow to run at live speed, these lines spawn the new piece in
         # funct, param = self.actions[0]
