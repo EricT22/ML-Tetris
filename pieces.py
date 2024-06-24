@@ -49,6 +49,7 @@ class Piece:
                 
             self.draw_on_board(board)
 
+            return True
         except IllegalMoveError:
             self.center.setY(self.center.getY() - 1)
             self.draw_on_board(board)

@@ -23,6 +23,7 @@ class Tetris_Game:
         self.score = 0
         self.lines = 0
 
+        self.state_size = 5
         self.board_for_calc = Board_Panel(0, cfg.TETRIS_ROWS, cfg.TETRIS_COLS, 0, 0)
         self.actions = {
             0 : (self.move_piece_down, cfg.SCORE_PER_MOVE_DOWN),
@@ -42,12 +43,12 @@ class Tetris_Game:
         
         self.restart_game()
         
-        return (0, 0, 0, 0, 0)
+        return [0, 0, 0, 0, 0]
 
 
 
 
-    def step(self, actions: tuple):
+    def step(self, actions: list):
         # takes actions to get to the best next state, 
         # returns (reward, done) 
         # where reward is the total score of the combined moves
@@ -94,13 +95,13 @@ class Tetris_Game:
         # state is a combination of number of holes, bumpiness, max height, min height, and lines cleared
         beginning_center = Point(self.cur_piece.center.getX(), self.cur_piece.center.getY())
 
+        self.board_for_calc.game_board = self.board.copy_of_board()
+
         states = {}
 
         num_rotations = 4 if self.cur_piece.name != 5 else 1
 
         for i in range(num_rotations):
-            self.board_for_calc.game_board = list[self.board.game_board]
-
             # move all the way to the left
             while self.cur_piece.move_sideways(self.board_for_calc, False):
                 pass
@@ -128,14 +129,15 @@ class Tetris_Game:
             self.cur_piece.set_center(beginning_center.getX(), beginning_center.getY())
             self.cur_piece.draw_on_board(self.board_for_calc)
 
-            self.cur_piece.rotate(self.board_for_calc, True)
+            if self.cur_piece.name != 5:
+                self.cur_piece.rotate(self.board_for_calc, True)
 
         return states
 
 
 
     
-    def state_properties(self, game_board) -> tuple[int, int, int, int, int]:
+    def state_properties(self, game_board) -> list[int, int, int, int, int]:
         heights = []
         num_holes = 0
         
@@ -157,7 +159,7 @@ class Tetris_Game:
         for i in range(1, cfg.TETRIS_COLS, 1):
             bumpiness += abs(heights[i] - heights[i - 1])
 
-        return (num_holes, bumpiness, max(heights), min(heights), self.num_rows_filled(game_board))
+        return [num_holes, bumpiness, max(heights), min(heights), self.num_rows_filled(game_board)]
 
 
     def num_rows_filled(self, board):

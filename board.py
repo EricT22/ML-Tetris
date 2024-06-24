@@ -45,6 +45,10 @@ class Board_Panel:
             for col in range(self.cols):
                 self.update_board(row, col, 0)
 
+    def copy_of_board(self):
+        return [row[:] for row in self.game_board]
+
+
 
     # debugging only (for now, ill use it for machine learning later)
     def print(self):
