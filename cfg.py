@@ -3,6 +3,8 @@ from collections import namedtuple
 Transition = namedtuple('Transition',
                         ('state', 'action', 'reward', 'next_state', 'done'))
 
+CHECKPOINT_FILE_PATH = 'checkpoint.tar'
+
 WIDTH = 950
 HEIGHT = 750
 

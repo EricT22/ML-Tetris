@@ -1,3 +1,5 @@
+import cfg
+import os
 import torch
 import torch.nn as nn
 import numpy as np
@@ -27,6 +29,7 @@ class Agent:
         self.size_of_state_rating = 1
 
         self.build_NN()
+        self.load()
     
     def build_NN(self):
         self.model = nn.Sequential(
@@ -70,6 +73,7 @@ class Agent:
 
         # don't want calculate gradients b/c we're not backpropagating at this step, 
         # just finding out which action to take given the current nn and all possible next states
+        self.model.eval()
         with torch.no_grad():
             # makes a forward pass through model with the given states 
             q_vals = self.model(torch.tensor(corresponding_states, dtype=torch.float32))
@@ -78,6 +82,9 @@ class Agent:
             q_vals = torch.flatten(q_vals)
         
         ind = torch.argmax(q_vals).item()
+
+        # setting back to training mode
+        self.model.train()
 
         return [next_actions[ind], corresponding_states[ind]]
 
@@ -98,3 +105,19 @@ class Agent:
 
     def optimize_model(self):
         pass
+
+
+
+    def save(self):
+        torch.save({"model_state_dict" : self.model.state_dict(),
+                    "optim_state_dict" : self.optimizer.state_dict()
+                    }, cfg.CHECKPOINT_FILE_PATH)
+        
+
+
+    def load(self):
+        if os.path.isfile(cfg.CHECKPOINT_FILE_PATH):
+            checkpoint = torch.load(cfg.CHECKPOINT_FILE_PATH)
+            
+            self.model.load_state_dict(checkpoint["model_state_dict"])
+            self.optimizer.load_state_dict(checkpoint["optim_state_dict"])
