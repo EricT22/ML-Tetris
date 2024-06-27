@@ -107,6 +107,9 @@ class Agent:
         pass
 
 
+    def replay(self):
+        self.optimize_model()
+
 
     def save(self):
         torch.save({"model_state_dict" : self.model.state_dict(),

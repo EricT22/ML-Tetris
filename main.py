@@ -1,4 +1,6 @@
 import pygame, sys, cfg
+import matplotlib.pyplot as plt
+import numpy as np
 from tetris_game import Tetris_Game
 from agent import Agent
 
@@ -69,10 +71,29 @@ def update_tick_speed():
             tetris.level_up_triggered = False
 
 
+def on_close(event):
+    sys.exit()
 
+
+def plot_scores(scores):
+    games = np.arange(len(scores)) + 1
+
+    plt.figure(figsize=(12, 6)).canvas.mpl_connect('close_event', on_close)
+    plt.plot(games, scores, marker='o')
+    plt.xlabel("Games", size=22.5)
+    plt.ylabel("Final Scores", size=22.5)
+    plt.show()
+
+
+
+
+
+# TODO: replay method
 
 
 if __name__ == "__main__":
+    final_scores = []
+
     agent = Agent(env=tetris)
     state = tetris.reset()
     
@@ -81,6 +102,10 @@ if __name__ == "__main__":
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                # Nothing to save yet
+                # agent.save()
+
+
                 run = False
             elif event.type == TETRIS_UPDATE and not tetris.game_over:
                 tetris.move_piece_down(0)
@@ -93,9 +118,12 @@ if __name__ == "__main__":
 
         if done:
             if len(agent.memory) == agent.memory.maxlen:
-                break
-            else:
-                state = tetris.reset()
+                final_scores.append(tetris.score)
+
+                # learn function
+                agent.replay()
+
+            state = tetris.reset()
                     
         
 
@@ -107,4 +135,5 @@ if __name__ == "__main__":
         clock.tick(60)
 
     pygame.quit()
-    sys.exit()
+
+    plot_scores(final_scores)
