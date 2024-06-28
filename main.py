@@ -98,10 +98,8 @@ if __name__ == "__main__":
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # Nothing to save yet
-                # agent.save()
-
-
+                agent.save()
+                
                 run = False
             elif event.type == TETRIS_UPDATE and not tetris.game_over:
                 tetris.move_piece_down(0)
