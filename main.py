@@ -87,10 +87,6 @@ def plot_scores(scores):
 
 
 
-
-# TODO: replay method
-
-
 if __name__ == "__main__":
     final_scores = []
 
