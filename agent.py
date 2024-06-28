@@ -141,7 +141,8 @@ class Agent:
 
     def save(self):
         torch.save({"model_state_dict" : self.model.state_dict(),
-                    "optim_state_dict" : self.optimizer.state_dict()
+                    "optim_state_dict" : self.optimizer.state_dict(),
+                    "current_epsilon" : self.epsilon
                     }, cfg.CHECKPOINT_FILE_PATH)
         
 
@@ -152,3 +153,4 @@ class Agent:
             
             self.model.load_state_dict(checkpoint["model_state_dict"])
             self.optimizer.load_state_dict(checkpoint["optim_state_dict"])
+            self.epsilon = checkpoint["current_epsilon"]
