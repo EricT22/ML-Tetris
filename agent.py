@@ -129,6 +129,9 @@ class Agent:
         loss.backward()
         self.optimizer.step()
 
+        # if I want to graph the loss later
+        return loss.item()
+
 
 
     def replay(self):
