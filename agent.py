@@ -4,23 +4,21 @@ import torch
 import torch.nn as nn
 import numpy as np
 from collections import deque
+from random import sample
 
 torch.manual_seed(0)
 np.random.seed(1)
 
 
 class Agent:
-    def __init__(self,
-                env, discount_factor = 0.95,
-                epsilon=1, epsilon_min=0.01, epsilon_decay=0.995,
-                learning_rate = 0.01, max_memory_size=20000) -> None:
+    def __init__(self, env) -> None:
         self.env = env
-        self.gamma = discount_factor
-        self.epsilon = epsilon
-        self.epsilon_min = epsilon_min
-        self.epsilon_decay = epsilon_decay
-        self.learning_rate = learning_rate
-        self.memory = deque(maxlen=max_memory_size)
+        self.gamma = cfg.GAMMA
+        self.epsilon = cfg.EPSILON
+        self.epsilon_min = cfg.EPSILON_MIN
+        self.epsilon_decay = cfg.EPSILON_DECAY
+        self.learning_rate = cfg.SGD_LEARNING_RATE
+        self.memory = deque(maxlen=cfg.MAX_MEMORY_SIZE)
 
         # size of the Tetris state
         self.state_size = env.state_size
@@ -103,12 +101,39 @@ class Agent:
 
 
 
-    def optimize_model(self):
-        pass
+    def learn(self, batch):
+        batch_states = []
+        batch_targets = []
+
+        for transition in batch:
+            s, a, r, ns, done = transition
+
+            self.model.eval()
+            with torch.no_grad():
+                if done:
+                    target = r
+                else:
+                    pred = torch.flatten(self.model(torch.tensor(ns, dtype=torch.float32)))
+                    target = r + self.gamma * pred.item()
+            self.model.train()
+
+            batch_states.append(s)
+            batch_targets.append(target)
+
+
+        self.lower_greedy_epsilon()
+
+        self.optimizer.zero_grad()
+        output = self.model(torch.tensor(batch_states, dtype=torch.float32))
+        loss = self.loss_fn(output, torch.tensor(batch_targets, dtype=torch.float32).unsqueeze(1))
+        loss.backward()
+        self.optimizer.step()
+
 
 
     def replay(self):
-        self.optimize_model()
+        batch = sample(self.memory, cfg.BATCH_SIZE)
+        self.learn(batch)
 
 
     def save(self):

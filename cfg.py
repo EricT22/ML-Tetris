@@ -1,10 +1,22 @@
 from collections import namedtuple
 
+# ML Constants 
 Transition = namedtuple('Transition',
                         ('state', 'action', 'reward', 'next_state', 'done'))
 
 CHECKPOINT_FILE_PATH = 'checkpoint.tar'
 
+BATCH_SIZE = 64
+
+MAX_MEMORY_SIZE = 20000
+
+GAMMA = 0.95
+EPSILON = 1
+EPSILON_MIN = 0.01
+EPSILON_DECAY = 0.9908319448927676 # Gets epsilon equal to the min epsilon val after lowering epsilon 500 times
+SGD_LEARNING_RATE = 0.01
+
+# Tetris Constants
 WIDTH = 950
 HEIGHT = 750
 
