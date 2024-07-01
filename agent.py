@@ -72,8 +72,8 @@ class Agent:
         if np.random.rand() <= self.epsilon:
             ind = np.random.choice(len(next_states))
 
-            print("random")
-            print("-------------------------------")
+            # print("random")
+            # print("-------------------------------")
 
             return [next_actions[ind], corresponding_states[ind]]
         
@@ -91,9 +91,9 @@ class Agent:
         
         ind = torch.argmax(q_vals).item()
 
-        print(q_vals)
-        print(ind)
-        print("---------------------")
+        # print(q_vals)
+        # print(ind)
+        # print("---------------------")
 
 
         # setting back to training mode
