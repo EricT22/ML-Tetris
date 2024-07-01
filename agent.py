@@ -45,12 +45,19 @@ class Agent:
             nn.Linear(16, self.size_of_state_rating)
         )
 
+        self.model.apply(self.init_weights)
+
         # Will use Mean Squared Error Loss function
         self.loss_fn = nn.MSELoss()
         
         # Will use stochastic gradient descent algorithm
         self.optimizer = torch.optim.SGD(self.model.parameters(), self.learning_rate)
         
+
+    def init_weights(m):
+        if isinstance(m, nn.Linear):
+            nn.init.kaiming_uniform_(m.weight, nonlinearity='relu')
+            nn.init.constant_(m.bias, 0)
 
 
 
@@ -64,6 +71,9 @@ class Agent:
 
         if np.random.rand() <= self.epsilon:
             ind = np.random.choice(len(next_states))
+
+            print("random")
+            print("-------------------------------")
 
             return [next_actions[ind], corresponding_states[ind]]
         
@@ -80,6 +90,11 @@ class Agent:
             q_vals = torch.flatten(q_vals)
         
         ind = torch.argmax(q_vals).item()
+
+        print(q_vals)
+        print(ind)
+        print("---------------------")
+
 
         # setting back to training mode
         self.model.train()

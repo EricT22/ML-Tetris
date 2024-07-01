@@ -114,20 +114,20 @@ if __name__ == "__main__":
             elif event.type == TETRIS_UPDATE and not tetris.game_over:
                 tetris.move_piece_down(0)
 
-        action, next_state = agent.choose_action(tetris.get_next_states())
+                action, next_state = agent.choose_action(tetris.get_next_states())
 
-        reward, done = tetris.step(action)
+                reward, done = tetris.step(action)
 
-        agent.store_in_memory(cfg.Transition(state, action, reward, next_state, done))
+                agent.store_in_memory(cfg.Transition(state, action, reward, next_state, done))
 
-        if done:
-            if len(agent.memory) == agent.memory.maxlen:
-                final_scores.append(tetris.score)
+                if done:
+                    if len(agent.memory) == agent.memory.maxlen:
+                        final_scores.append(tetris.score)
 
-                # learn function
-                accumulated_losses.append(agent.replay())
+                        # learn function
+                        accumulated_losses.append(agent.replay())
 
-            state = tetris.reset()
+                    state = tetris.reset()
                     
         
 
