@@ -6,7 +6,7 @@ Transition = namedtuple('Transition',
 
 CHECKPOINT_FILE_PATH = 'checkpoint.tar'
 
-BATCH_SIZE = 64
+BATCH_SIZE = 256
 
 MAX_MEMORY_SIZE = 20000
 
