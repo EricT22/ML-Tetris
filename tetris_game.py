@@ -132,7 +132,14 @@ class Tetris_Game:
             self.cur_piece.draw_on_board(self.board_for_calc)
 
             if self.cur_piece.name != 5:
-                self.cur_piece.rotate(self.board_for_calc, True)
+                # try to rotate to the right if possible if not, 
+                # piece is reset to beginning orientation and calculations are complete
+                if not self.cur_piece.rotate(self.board_for_calc, True):
+                    for j in range(i):
+                        self.cur_piece.rotate(self.board_for_calc, False)
+                    
+                    break
+
 
         return states
 
