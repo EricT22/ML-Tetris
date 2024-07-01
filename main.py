@@ -75,20 +75,30 @@ def on_close(event):
     sys.exit()
 
 
-def plot_scores(scores):
+def plot_results(scores, losses):
     games = np.arange(len(scores)) + 1
 
-    plt.figure(figsize=(12, 6)).canvas.mpl_connect('close_event', on_close)
-    plt.plot(games, scores, marker='o')
-    plt.xlabel("Games", size=22.5)
-    plt.ylabel("Final Scores", size=22.5)
+    fig, ((ax1), (ax2)) = plt.subplots(2, 1, figsize=(12, 8))
+    
+    fig.canvas.mpl_connect('close_event', on_close)
+
+    ax1.plot(games, losses, marker='o')
+    ax1.set_xlabel("Epochs", size=22.5)
+    ax1.set_ylabel("Loss", size=22.5)
+
+    ax2.plot(games, scores, marker='o')
+    ax2.set_xlabel("Games", size=22.5)
+    ax2.set_ylabel("Final Score", size=22.5)
+
+    plt.subplots_adjust(hspace=0.4, top=.95, bottom=0.1)
+    plt.legend(loc="upper left")
     plt.show()
 
 
 
 
 if __name__ == "__main__":
-    final_scores = []
+    final_scores, accumulated_losses = [], []
 
     agent = Agent(env=tetris)
     state = tetris.reset()
@@ -115,7 +125,7 @@ if __name__ == "__main__":
                 final_scores.append(tetris.score)
 
                 # learn function
-                agent.replay()
+                accumulated_losses.append(agent.replay())
 
             state = tetris.reset()
                     
@@ -130,4 +140,4 @@ if __name__ == "__main__":
 
     pygame.quit()
 
-    plot_scores(final_scores)
+    plot_results(final_scores, accumulated_losses)
