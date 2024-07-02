@@ -114,6 +114,7 @@ if __name__ == "__main__":
             elif event.type == TETRIS_UPDATE and not tetris.game_over:
                 tetris.move_piece_down(0)
 
+                # state evaluation and next steps only need to be determined when new piece spawns
                 action, next_state = agent.choose_action(tetris.get_next_states())
 
                 reward, done = tetris.step(action)
