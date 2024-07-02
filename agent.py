@@ -50,8 +50,8 @@ class Agent:
         # Will use Mean Squared Error Loss function
         self.loss_fn = nn.MSELoss()
         
-        # Will use stochastic gradient descent algorithm
-        self.optimizer = torch.optim.SGD(self.model.parameters(), self.learning_rate)
+        # Adam optimizer (b/c it has adaptive learning rates)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), self.learning_rate)
         
 
     def init_weights(m):
