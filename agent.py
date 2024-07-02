@@ -144,14 +144,13 @@ class Agent:
         loss.backward()
         self.optimizer.step()
 
-        # if I want to graph the loss later
         return loss.item()
 
 
 
     def replay(self):
         batch = sample(self.memory, cfg.BATCH_SIZE)
-        self.learn(batch)
+        return self.learn(batch)
 
 
     def save(self):
