@@ -30,22 +30,29 @@ class Agent:
         self.load()
     
     def build_NN(self):
+        # He initialization
+        def init_weights(m):
+            if isinstance(m, nn.Linear):
+                nn.init.kaiming_uniform_(m.weight, nonlinearity='relu')
+                nn.init.constant_(m.bias, 0)
+        
+        
         self.model = nn.Sequential(
             # input layer goes to hidden layer with 16 neurons
-            nn.Linear(self.state_size, 16),
+            nn.Linear(self.state_size, 32),
             # Will use the ReLU activation function for transition to next layer:
             # z^(L) = w^(L) * a^(L-1) + b(L)
             # a^(L) = ReLU(z^(L))
             nn.ReLU(), 
-            # hidden layer 1 goes to hidden layer 2 (arbitrarily chose two hidden layers each with size 16)
-            nn.Linear(16, 16),
+            # hidden layer 1 goes to hidden layer 2 (arbitrarily chose two hidden layers each with size 32)
+            nn.Linear(32, 32),
             # also uses ReLU activation function
             nn.ReLU(),
             # hidden layer 2 goes to output layer
-            nn.Linear(16, self.size_of_state_rating)
+            nn.Linear(32, self.size_of_state_rating)
         )
 
-        self.model.apply(self.init_weights)
+        self.model.apply(init_weights)
 
         # Will use Mean Squared Error Loss function
         self.loss_fn = nn.MSELoss()
@@ -54,10 +61,7 @@ class Agent:
         self.optimizer = torch.optim.Adam(self.model.parameters(), self.learning_rate)
         
 
-    def init_weights(m):
-        if isinstance(m, nn.Linear):
-            nn.init.kaiming_uniform_(m.weight, nonlinearity='relu')
-            nn.init.constant_(m.bias, 0)
+    
 
 
 
@@ -72,8 +76,8 @@ class Agent:
         if np.random.rand() <= self.epsilon:
             ind = np.random.choice(len(next_states))
 
-            # print("random")
-            # print("-------------------------------")
+            print("random")
+            print("-------------------------------")
 
             return [next_actions[ind], corresponding_states[ind]]
         
@@ -91,9 +95,9 @@ class Agent:
         
         ind = torch.argmax(q_vals).item()
 
-        # print(q_vals)
-        # print(ind)
-        # print("---------------------")
+        print(q_vals)
+        print(ind)
+        print("---------------------")
 
 
         # setting back to training mode
