@@ -6,11 +6,11 @@ Transition = namedtuple('Transition',
 
 CHECKPOINT_FILE_PATH = 'checkpoint.tar'
 
-BATCH_SIZE = 256
+BATCH_SIZE = 512
 
-MAX_MEMORY_SIZE = 20000
+MAX_MEMORY_SIZE = 3000 # Should take ~10 min to fill up (1 transition every 200ms)
 
-GAMMA = 0.95
+GAMMA = 0.995
 EPSILON = 1
 EPSILON_MIN = 0.01
 EPSILON_DECAY = 0.9908319448927676 # Gets epsilon equal to the min epsilon val after lowering epsilon 500 times
