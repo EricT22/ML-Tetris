@@ -95,6 +95,9 @@ def plot_results(scores, losses):
     plt.show()
 
 
+# TODO: Set up a bool var in cfg called TEST_NN that if true doesn't train
+#       but rather runs the nn as off the bat (aka doesn't start w/ random moves)
+#       and then set up the logic for it in main/applicable files so that it works
 
 
 if __name__ == "__main__":
