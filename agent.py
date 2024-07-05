@@ -115,7 +115,10 @@ class Agent:
 
 
     def lower_greedy_epsilon(self):
-        self.epsilon = self.epsilon * self.epsilon_decay if self.epsilon > self.epsilon_min else self.epsilon
+        if self.epsilon > (cfg.PRECISION - self.epsilon_min):
+            self.epsilon = self.epsilon * self.epsilon_decay
+        else:
+            self.epsilon = self.epsilon_min
 
 
 

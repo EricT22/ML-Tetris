@@ -12,9 +12,11 @@ MAX_MEMORY_SIZE = 3000 # Should take ~10 min to fill up (1 transition every 200m
 
 GAMMA = 0.995
 EPSILON = 1
-EPSILON_MIN = 0.01
-EPSILON_DECAY = 0.9908319448927676 # Gets epsilon equal to the min epsilon val after lowering epsilon 500 times
+EPSILON_MIN = 0.0
+EPSILON_DECAY = 0.9817479430199844 # Gets epsilon equal to the min epsilon val after lowering epsilon 500 times
 SGD_LEARNING_RATE = 0.001
+
+PRECISION = 0.0001
 
 # Tetris Constants
 WIDTH = 950
