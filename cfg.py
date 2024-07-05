@@ -4,7 +4,7 @@ from collections import namedtuple
 Transition = namedtuple('Transition',
                         ('state', 'action', 'reward', 'next_state', 'done'))
 
-CHECKPOINT_FILE_PATH = 'checkpoint.tar'
+CHECKPOINT_FILE_PATH = 'model/checkpoint.tar'
 
 BATCH_SIZE = 512
 
