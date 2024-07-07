@@ -8,7 +8,7 @@ CHECKPOINT_FILE_PATH = 'model/checkpoint.tar'
 
 BATCH_SIZE = 512
 
-MAX_MEMORY_SIZE = 3000 # Should take ~10 min to fill up (1 transition every 200ms)
+MAX_MEMORY_SIZE = 4500 # Should take ~15 min to fill up (1 transition every 200ms)
 
 GAMMA = 0.995
 EPSILON = 1
