@@ -11,10 +11,11 @@ np.random.seed(1)
 
 
 class Agent:
-    def __init__(self, env) -> None:
+    def __init__(self, env,
+                 greedy_epsilon = cfg.EPSILON) -> None:
         self.env = env
         self.gamma = cfg.GAMMA
-        self.epsilon = cfg.EPSILON
+        self.epsilon = greedy_epsilon
         self.epsilon_min = cfg.EPSILON_MIN
         self.epsilon_decay = cfg.EPSILON_DECAY
         self.learning_rate = cfg.SGD_LEARNING_RATE

@@ -75,32 +75,24 @@ def on_close(event):
     sys.exit()
 
 
-def plot_results(scores, losses):
+def plot_final_scores(scores):
     games = np.arange(len(scores)) + 1
 
-    fig, ((ax1), (ax2)) = plt.subplots(2, 1, figsize=(12, 8))
-    
-    fig.canvas.mpl_connect('close_event', on_close)
-
-    ax1.plot(games, losses, marker='o')
-    ax1.set_xlabel("Epochs", size=22.5)
-    ax1.set_ylabel("Loss", size=22.5)
-
-    ax2.plot(games, scores, marker='o')
-    ax2.set_xlabel("Games", size=22.5)
-    ax2.set_ylabel("Final Score", size=22.5)
-
-    plt.subplots_adjust(hspace=0.4, top=.95, bottom=0.1)
-    plt.legend(loc="upper left")
+    plt.figure(figsize=(12, 6)).canvas.mpl_connect('close_event', on_close)
+    plt.plot(games, scores, marker='o')
+    plt.xlabel("Games", size=22.5)
+    plt.ylabel("Final Score", size=22.5)
     plt.show()
 
 
 
 
-if __name__ == "__main__":
-    final_scores, accumulated_losses = [], []
+# NOTE: Agent doesn't learn in game loop, just plays according to what it has
 
-    agent = Agent(env=tetris)
+if __name__ == "__main__":
+    final_scores = []
+
+    agent = Agent(env=tetris, greedy_epsilon=0)
     state = tetris.reset()
     
     run = True
@@ -114,19 +106,12 @@ if __name__ == "__main__":
             elif event.type == TETRIS_UPDATE and not tetris.game_over:
                 tetris.move_piece_down(0)
 
-                # state evaluation and next steps only need to be determined when new piece spawns
                 action, next_state = agent.choose_action(tetris.get_next_states())
 
                 reward, done = tetris.step(action)
 
-                agent.store_in_memory(cfg.Transition(state, action, reward, next_state, done))
-
                 if done:
-                    if len(agent.memory) == agent.memory.maxlen:
-                        final_scores.append(tetris.score)
-
-                        # learn function
-                        accumulated_losses.append(agent.replay())
+                    final_scores.append(tetris.score)
 
                     state = tetris.reset()
                     
@@ -141,4 +126,4 @@ if __name__ == "__main__":
 
     pygame.quit()
 
-    plot_results(final_scores, accumulated_losses)
+    plot_final_scores(final_scores)
