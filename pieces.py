@@ -11,8 +11,17 @@ class Piece:
         self.piece_constants: list[list[Point]] = []
 
 
-    # TODO implement copy method (probably)
-    # reason: calculating next states with the held piece in mind
+    def copy(self):
+        copy = Piece()
+
+        copy.name = self.name
+        copy.center = Point(self.center.getX(), self.center.getY())
+        copy.orientation = self.orientation
+
+        # same reference is fine b/c piece constants never modified
+        copy.piece_constants = self.piece_constants
+
+        return copy
 
     def set_center(self, x, y):
         self.center.setX(x)
