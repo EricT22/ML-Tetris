@@ -32,7 +32,7 @@ class Tetris_Game:
             3 : (self.move_piece_sideways, False),
             4 : (self.rotate_piece, True),
             5 : (self.rotate_piece, False),
-            6 : self.hold
+            6 : (self.hold, None)
         }
 
     
@@ -48,49 +48,55 @@ class Tetris_Game:
 
 
 
-    def step(self, actions: list):
+    def step(self, actions: tuple):
         # takes actions to get to the best next state, 
         # returns (reward, done) 
         # where reward is the total score of the combined moves
         # and done is a flag that is set if the game is over
         initial_score = self.score
 
+        if actions[2]:
+            self.take_action(key=6)
+
         for i in range(actions[0]):
-            action, param = self.actions[4]
-            action(param)
+            self.take_action(key=4)
         
         x_offset = actions[1]
 
         if x_offset > 0:
             # move right
             while x_offset > 0:
-                action, param = self.actions[2]
-                action(param)
+                self.take_action(key=2)
 
                 x_offset -= 1
         elif x_offset < 0:
             # move left
             while x_offset < 0:
-                action, param = self.actions[3]
-                action(param)
+                self.take_action(key=3)
 
                 x_offset += 1
         
         # move all the way down
-        action, param = self.actions[1]
-        action(param)
+        self.take_action(key=1)
 
         # if program is too slow to run at live speed, these lines spawn the new piece in
-        # funct, param = self.actions[0]
-        # funct(param)
+        # self.take_action(key=0)
         
         return (self.score - initial_score, self.game_over)
+    
 
+    def take_action(self, key):
+        action, param = self.actions[key]
+
+        if param is not None:
+            action(param)
+        else:
+            action()
 
 
 
     # returns states dictionary with key value pair:
-    # (num rotations, x-offset) : tuple of state properties
+    # (num rotations, x-offset, hold boolean) : tuple of state properties
     # in other words, 
     # actions to get to state : state itself
     def get_next_states(self):
@@ -115,7 +121,7 @@ class Tetris_Game:
                 except IllegalMoveError:
                     # here, the piece will be as far down as it can go and we can evaluate the state
                     
-                    states[(i, self.cur_piece.center.getX() - beginning_center.getX())] = self.state_properties(self.board_for_calc.game_board)
+                    states[(i, self.cur_piece.center.getX() - beginning_center.getX(), 0)] = self.state_properties(self.board_for_calc.game_board)
 
                 # move piece back up
                 self.cur_piece.remove_piece_from_board(self.board_for_calc)
@@ -140,10 +146,59 @@ class Tetris_Game:
                     
                     break
 
+        states |= self._get_states_from_secondary_piece()
 
         return states
 
 
+    def _get_states_from_secondary_piece(self):
+        states = {}
+
+        if self.held_piece is None:
+            secondary_piece = self.next_piece.copy()
+        else:
+            secondary_piece = self.held_piece.copy()
+        
+        # if its the same piece no need to do the calculations
+        if secondary_piece.name == self.cur_piece.name:
+            return states
+
+
+        secondary_piece.set_center(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
+        
+        self.board_for_calc.game_board = self.board.copy_of_board()
+        self.cur_piece.remove_piece_from_board(self.board_for_calc)
+        secondary_piece.draw_on_board(self.board_for_calc)
+
+        num_rotations = 4 if secondary_piece.name != 5 else 1
+
+        for i in range(num_rotations):
+            while secondary_piece.move_sideways(self.board_for_calc, False):
+                pass
+            
+            while True:
+                try:
+                    while secondary_piece.move_down(self.board_for_calc):
+                        pass
+                except IllegalMoveError:
+                    states[(i, secondary_piece.center.getX() - cfg.PIECE_STARTING_X, 1)] = self.state_properties(self.board_for_calc.game_board)
+
+                secondary_piece.remove_piece_from_board(self.board_for_calc)
+                secondary_piece.set_center(secondary_piece.center.getX(), cfg.PIECE_STARTING_Y)
+                secondary_piece.draw_on_board(self.board_for_calc)
+
+                if not secondary_piece.move_sideways(self.board_for_calc, True):
+                    break
+            
+
+            secondary_piece.remove_piece_from_board(self.board_for_calc)
+            secondary_piece.set_center(cfg.PIECE_STARTING_X, cfg.PIECE_STARTING_Y)
+            secondary_piece.draw_on_board(self.board_for_calc)
+
+            if secondary_piece.name != 5 and not secondary_piece.rotate(self.board_for_calc, True):
+                break
+
+        return states
 
     
     def state_properties(self, game_board) -> list[int, int, int, int, int]:
