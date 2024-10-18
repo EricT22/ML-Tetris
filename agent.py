@@ -39,7 +39,7 @@ class Agent:
         
         
         self.model = nn.Sequential(
-            # input layer goes to hidden layer with 16 neurons
+            # input layer goes to hidden layer with 42 neurons
             nn.Linear(self.state_size, 42),
             # Will use the ReLU activation function for transition to next layer:
             # z^(L) = w^(L) * a^(L-1) + b(L)
