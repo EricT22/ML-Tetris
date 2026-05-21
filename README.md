@@ -10,7 +10,7 @@ Published at the **2024 Southern California Conference for Undergraduate Researc
 
 ![Agent gameplay demo](demo/demo.gif)
 
-> Score: 211,826,590 | Level: 627 | Lines: 6,262 — a snapshot mid-run. Peak performance exceeds 5B points.
+> A snapshot mid-run - Score: ~274,470,724 | Level: 649 | Lines: 6,489. Peak performance exceeds 5B points.
 
 ---
 
